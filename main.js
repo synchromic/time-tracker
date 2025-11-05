@@ -29,10 +29,14 @@ for (const category of categories) {
   radio.name = "category";
   radio.value = category;
   row.insertCell().appendChild(radio);
-  row.insertCell().appendChild(makeCategoryBox(category));
   const label = document.createElement("label");
   label.htmlFor = radio.id;
-  label.innerText = capitalize(category.charAt(0).toUpperCase() + category.slice(1));
+  label.style.display = "flex";
+  label.style.gap = "0.25em";
+  label.appendChild(makeCategoryBox(category));
+  const labelSpan = document.createElement("span");
+  labelSpan.innerText = capitalize(category.charAt(0).toUpperCase() + category.slice(1));
+  label.appendChild(labelSpan);
   row.insertCell().appendChild(label);
 }
 
