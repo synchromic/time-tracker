@@ -1,19 +1,33 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Kylie's Time Tracker</title>
+    <title>Time Tracker</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
-    <form action="/api/login" method="post">
-      <label for="password">Kylie's login:</label>
-      <input type="password" name="password">
-      <input type="submit" value="Log in">
-    </form>
-    <form action="/api/logout", method="post">
-      <input type="submit" value="Log out">
-    </form>
+    <div id="notConnected" class="red">Not connected 
+      <span class="last-connected">(last connected <span class="last-connected-s">0</span>s ago)</span>
+    </div>
+    <div id="connected" style="display: none">
+      <span class="green">Connected
+        <span class="last-connected">(checked <span class="last-connected-s">0</span>s ago)</span>
+      </span>
+      <div id="notLoggedIn">
+        <span class="red">Not logged in</span>
+        <form action="/api/login" method="post">
+          <label for="password">Password:</label>
+          <input type="password" name="password">
+          <input type="submit" value="Log in">
+        </form>
+      </div>
+      <div id="loggedIn" style="display: none">
+        <span class="green">Logged in</span>
+        <form action="/api/logout" method="post">
+          <input type="submit" value="Log out">
+        </form>
+      </div>
+    </div>
     <form id="action-form">
       <input type="text" id="text" name="text" placeholder="Action..." style="width: 300px" required><br>
       <label for="timed">Timed?</label><input type="checkbox" id="timed" name="timed"><br>
@@ -28,6 +42,7 @@
     <table id="timers"></table>
     <br>
     <table id="past-actions"></table>
+    <script src="login.js"></script>
     <script src="main.js"></script>
   </body>
 </html>

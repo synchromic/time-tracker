@@ -246,7 +246,7 @@ if (localStorageTimers) {
   timers = data.map(Timer.fromJSONObject);
 }
 Timer.remakeTable();
-setInterval(Timer.updateTable, 1000);
+setInterval(Timer.updateTable, 500);
 
 function formatDate(date) {
   const datePart = date.toLocaleDateString("en-CA"); // "2025-11-03"

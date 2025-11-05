@@ -22,14 +22,10 @@ app.get("/", (req, res) => {
 const adminSalt = Buffer.from(process.env.ADMIN_SALT, "base64");
 app.post("/api/login", (req, res) => {
   crypto.pbkdf2(req.body.password, adminSalt, 10000, 64, "sha512", (err, derivedKey) => {
-    if (err) {
-      res.redirect(400, "/");
-    } else if (derivedKey.toString("base64") === process.env.ADMIN_HASH) {
+    if (!err && derivedKey.toString("base64") === process.env.ADMIN_HASH) {
       req.session.loggedIn = true;
-      res.redirect("/");
-    } else {
-      res.redirect(401, "/");
     }
+    res.redirect("/");
   });
 });
 
