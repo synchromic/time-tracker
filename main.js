@@ -19,7 +19,7 @@ app.get("/", (req, res) => {
   res.sendFile("static/index.html");
 });
 
-const adminSalt = Buffer.from(process.env.ADMIN_SALT, "base64");
+const adminSalt = Buffer.from(process.env.ADMIN_SALT ?? "", "base64");
 app.post("/api/login", (req, res) => {
   crypto.pbkdf2(req.body.password, adminSalt, 10000, 64, "sha512", (err, derivedKey) => {
     if (!err && derivedKey.toString("base64") === process.env.ADMIN_HASH) {
@@ -38,6 +38,10 @@ app.get("/api/logincheck", (req, res) => {
   res.send({ loggedIn: req.session.loggedIn ?? false });
 });
 
-app.listen(port, () => {
-  console.log(`Listening on port ${port}`);
+app.listen(port, (err) => {
+  if (err) {
+    console.log(err);
+  } else {
+    console.log(`Listening on port ${port}`);
+  }
 });
