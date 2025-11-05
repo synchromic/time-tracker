@@ -9,12 +9,10 @@
   <body>
     <div id="loginFail" class="red" style="display: none">Login failed!</div>
     <div id="notConnected" class="red">Not connected 
-      <span class="last-connected">(last connected <span class="last-connected-s">0</span>s ago)</span>
+      <span id="lastConnected" style="display: none">(last connected <span id="lastConnectedS">0</span>s ago)</span>
     </div>
     <div id="connected" style="display: none">
-      <span class="green">Connected
-        <span class="last-connected">(checked <span class="last-connected-s">0</span>s ago)</span>
-      </span>
+      <span class="green">Connected</span>
       <div id="notLoggedIn">
         <span class="red">Not logged in</span>
         <form action="/api/login" method="post">
@@ -44,7 +42,7 @@
     <table id="timers"></table>
     <br>
     <table id="past-actions"></table>
-    <script src="login.js"></script>
-    <script src="main.js"></script>
+    <script type="module" src="login.js"></script>
+    <script type="module" src="main.js"></script>
   </body>
 </html>

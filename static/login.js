@@ -34,7 +34,7 @@ async function checkLogin() {
 let wasConnected = false;
 let wasLoggedIn = false;
 function updateDisplay() {
-  let setb = (id, b) => { document.getElementById(id).style.display = b ? "block" : "none"; };
+  let setb = (id, b, t="block") => { document.getElementById(id).style.display = b ? t : "none"; };
   if (wasConnected !== connected) {
     setb("connected", connected);
     setb("notConnected", !connected);
@@ -45,18 +45,10 @@ function updateDisplay() {
     setb("notLoggedIn", !loggedIn);
     wasLoggedIn = loggedIn;
   }
-  if (!lastConnected) {
-    for (const elt of document.getElementsByClassName("last-connected")) {
-      elt.style.display = "none";
-    }
-  } else {
-    for (const elt of document.getElementsByClassName("last-connected")) {
-      elt.style.display = "inline";
-    }
+  setb("lastConnected", !!lastConnected, "inline");
+  if (lastConnected) {
     const secs = Math.floor((new Date() - lastConnected) / 1000);
-    for (const elt of document.getElementsByClassName("last-connected-s")) {
-      elt.innerText = secs;
-    }
+    document.getElementById("lastConnectedS").innerText = secs;
   }
 }
 

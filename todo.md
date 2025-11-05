@@ -1,2 +1,2 @@
-[ ] move js into module files
+[x] move js into module files
 [ ] https
