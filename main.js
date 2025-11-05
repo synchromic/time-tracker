@@ -1,20 +1,58 @@
 let actions = [];
 let timers = [];
+let categories = ["none", "work", "play", "exercise", "sleep"];
+let categoryColors = { "none": "#ffffff", "work": "#82e617", "play": "#eb5299", "exercise": "#5287eb", "sleep": "#999999" }
+
+function capitalize(word) {
+  return word.charAt(0).toUpperCase() + word.slice(1);
+}
+
+function makeCategoryBox(category) {
+  let div = document.createElement("div");
+  div.style.backgroundColor = categoryColors[category] ?? "#ffffff";
+  div.style.width = "0.8em";
+  div.style.height = "0.8em";
+  div.style.border = "1px solid black";
+  div.ariaDescription = `Category ${category}`;
+  div.title = category === "none" ? "No category" : capitalize(category);
+  return div;
+}
+
+// build category input
+const categoryInputTable = document.getElementById("categories");
+categoryInputTable.innerHTML = "";
+for (const category of categories) {
+  const row = categoryInputTable.insertRow();
+  const radio = document.createElement("input");
+  radio.type = "radio";
+  radio.id = `category-${category}`
+  radio.name = "category";
+  radio.value = category;
+  row.insertCell().appendChild(radio);
+  row.insertCell().appendChild(makeCategoryBox(category));
+  const label = document.createElement("label");
+  label.htmlFor = radio.id;
+  label.innerText = capitalize(category.charAt(0).toUpperCase() + category.slice(1));
+  row.insertCell().appendChild(label);
+}
 
 class Action {
-  constructor({text, timestamp, id, timed, isStart}) {
+  // An action that happens at a single point in time.
+
+  constructor({text, timestamp, id, timed, isStart, category}) {
     this.text = text ?? "";
     this.timestamp = timestamp ?? new Date();
     this.id = id ?? this.timestamp.getTime().toString();
     this.timed = timed ?? false;
     this.isStart = isStart ?? false;
     this.deleted = false;
+    this.category = category || "none";
   }
 
   static fromJSONObject(action) {
     return new Action({
       ...action,
-      text: action.text ?? action.action,
+      text: action.text ?? action.action, // TODO: deprecate
       timestamp: new Date(action.timestamp),
     })
   }
@@ -52,6 +90,7 @@ class Action {
     deleteButton.addEventListener("click", this.deleteFromList.bind(this));
     row.insertCell().appendChild(deleteButton);
     row.insertCell().innerText = formatDate(this.timestamp);
+    row.insertCell().appendChild(makeCategoryBox(this.category));
     row.insertCell().innerText = this.text;
   }
 
@@ -67,12 +106,15 @@ class Action {
 }
 
 class Timer {
-  constructor({text, startTime, id}) {
+  // An action that is ongoing.
+
+  constructor({text, startTime, id, category}) {
     this.text = text ?? "";
     this.startTime = startTime ?? new Date();
     this.id = id ?? this.startTime.getTime().toString();
     this.htmlRow = null;
     this.startAction = null;
+    this.category = category ?? "none";
   }
 
   static fromJSONObject(timer) {
@@ -98,6 +140,7 @@ class Timer {
       id: this.id + "-ts",
       timed: true,
       isStart: true,
+      category: this.category,
     });
     this.startAction.addToList(update);
     Timer.remakeTable();
@@ -120,6 +163,7 @@ class Timer {
       id: this.id + "-tf",
       timed: true,
       isStart: false,
+      category: this.category,
     });
     finishAction.addToList(true);
     Timer.remakeTable();
@@ -137,6 +181,7 @@ class Timer {
     deleteButton.addEventListener("click", this.deleteFromList.bind(this));
     row.insertCell().appendChild(deleteButton);
     row.insertCell().id = "elapsed";
+    row.insertCell().appendChild(makeCategoryBox(this.category));
     row.insertCell().innerText = this.text;
     this.htmlRow = row;
     this.updateRow(now);
@@ -209,13 +254,16 @@ function restoreBackup() {
 document.getElementById("action-form").addEventListener("submit", (e) => {
   e.preventDefault();
   const data = new FormData(e.target);
+  console.log(data);
   if (data.get("timed") === "on") {
     new Timer({
       text: data.get("text"),
+      category: data.get("category"),
     }).addToList();
   } else {
     new Action({
       text: data.get("text"),
+      category: data.get("category"),
     }).addToList();
   }
   e.target.elements["text"].value = "";

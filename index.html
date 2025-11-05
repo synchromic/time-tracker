@@ -3,11 +3,17 @@
   <head>
     <title>Kylie's Time Tracker</title>
     <meta charset="utf-8">
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <form id="action-form">
       <input type="text" id="text" name="text" placeholder="Action..." style="width: 300px" required><br>
       <label for="timed">Timed?</label><input type="checkbox" id="timed" name="timed"><br>
+      <fieldset>
+        <legend>Action category:</legend>
+        <table id="categories"></table>
+      </fieldset>
+      <br>
       <input type="submit" value="Add">
     </form>
     <br>
