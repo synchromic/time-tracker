@@ -7,6 +7,20 @@ function capitalize(word) {
   return word.charAt(0).toUpperCase() + word.slice(1);
 }
 
+function formatDuration(seconds) {
+  // doesn't support negative duration yet
+  // examples: 0:00, 0:23, 1:23, 11:23, 1:05:06
+  const [remMin, sec] = [Math.floor(seconds / 60), seconds % 60];
+  const zeroSec = (sec < 10 ? "0" : "") + sec.toString();
+  const [hr, min] = [Math.floor(remMin / 60), remMin % 60];
+  if (hr === 0) {
+    return `${min}:${zeroSec}`;
+  } else {
+    const zeroMin = (min < 10 ? "0" : "") + min.toString();
+    return `${hr}:${zeroMin}:${zeroSec}`;
+  }
+}
+
 function makeCategoryBox(category) {
   let div = document.createElement("div");
   div.style.backgroundColor = categoryColors[category] ?? "#ffffff";
@@ -28,6 +42,7 @@ for (const category of categories) {
   radio.id = `category-${category}`
   radio.name = "category";
   radio.value = category;
+  if (category === "none") radio.checked = true;
   row.insertCell().appendChild(radio);
   const label = document.createElement("label");
   label.htmlFor = radio.id;
@@ -194,10 +209,7 @@ class Timer {
   updateRow(now) {
     if (!this.htmlRow) throw new Error("trying to update timer row that was not made");
     const diffSec = Math.floor((now - this.startTime) / 1000);
-    const [remMin, sec] = [Math.floor(diffSec / 60), diffSec % 60];
-    const [hr, min] = [Math.floor(remMin / 60), remMin % 60];
-    const elapsed = `${hr}:${min}:${sec}`;
-    this.htmlRow.cells["elapsed"].innerText = elapsed;
+    this.htmlRow.cells["elapsed"].innerText = formatDuration(diffSec);
   }
 
   static remakeTable() {
