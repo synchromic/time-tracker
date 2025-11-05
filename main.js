@@ -24,8 +24,10 @@ app.post("/api/login", (req, res) => {
   crypto.pbkdf2(req.body.password, adminSalt, 10000, 64, "sha512", (err, derivedKey) => {
     if (!err && derivedKey.toString("base64") === process.env.ADMIN_HASH) {
       req.session.loggedIn = true;
+      res.redirect("/");
+    } else {
+      res.redirect("/?result=fail");
     }
-    res.redirect("/");
   });
 });
 

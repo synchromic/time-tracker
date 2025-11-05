@@ -1,3 +1,8 @@
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get("result") === "fail") {
+  document.getElementById("loginFail").style.display = "block";
+}
+
 let connected = false;
 let loggedIn = false;
 let lastConnected = null;
